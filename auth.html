@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Aviator Crash Game - Play and win! Free signup, instant play, exciting multipliers!">
+    <meta name="keywords" content="aviator game, crash game, online casino, multiplier game">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Aviator Crash Game">
+    <meta property="og:description" content="Play the most exciting crash game online! Win with multipliers!">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/667eea/ffffff?text=Aviator+Game">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Aviator Crash Game">
+    <meta property="twitter:description" content="Play the most exciting crash game online!">
+    
+    <!-- Favicon for all devices -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <title>Aviator Game - Login & Signup</title>
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="logo">
+                <h1>🛩️ AVIATOR</h1>
+                <p>Casino Crash Game</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="form-container" id="loginForm">
+                <h2>Welcome Back!</h2>
+                <p class="subtitle">Login to continue playing</p>
+                
+                <form id="loginFormElement" onsubmit="return handleLogin(event)">
+                    <div class="input-group">
+                        <label for="loginIdentifier">Email or Phone Number</label>
+                        <input 
+                            type="text" 
+                            id="loginIdentifier" 
+                            placeholder="Enter your email or phone" 
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="loginPassword">Password</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            placeholder="Enter your password" 
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="form-container hidden" id="signupForm">
+                <h2>Create Account</h2>
+                <p class="subtitle">Join and start playing now!</p>
+                
+                <form id="signupFormElement" onsubmit="return handleSignup(event)">
+                    <div class="input-group">
+                        <label for="signupName">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="signupName" 
+                            placeholder="Enter your name" 
+                            required
+                            minlength="3"
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label>Choose Signup Method</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="signupMethod" value="email" checked onchange="toggleSignupMethod()">
+                                <span>📧 Email</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="signupMethod" value="phone" onchange="toggleSignupMethod()">
+                                <span>📱 Phone</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="input-group" id="emailGroup">
+                        <label for="signupEmail">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="signupEmail" 
+                            placeholder="Enter your email"
+                        >
+                    </div>
+
+                    <div class="input-group hidden" id="phoneGroup">
+                        <label for="signupPhone">Phone Number</label>
+                        <input 
+                            type="tel" 
+                            id="signupPhone" 
+                            placeholder="Enter 10-digit number"
+                            pattern="[0-9]{10}"
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="signupPassword">Password</label>
+                        <input 
+                            type="password" 
+                            id="signupPassword" 
+                            placeholder="Create a password" 
+                            required
+                            minlength="6"
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            id="signupConfirmPassword" 
+                            placeholder="Confirm your password" 
+                            required
+                            minlength="6"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                </div>
+            </div>
+
+            <div class="message-box" id="messageBox"></div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
