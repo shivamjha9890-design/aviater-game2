@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Support - Aviator Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <div class="support-container">
+        <div class="support-header">
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Game
+            </button>
+            <h1><i class="fas fa-headset"></i> Live Support</h1>
+            <p>We're here to help you 24/7</p>
+        </div>
+
+        <div class="support-content">
+            <!-- User Info Section -->
+            <div class="user-info-section" id="userInfoSection">
+                <h2>Start a Support Chat</h2>
+                <p>Please enter your email to begin</p>
+                <div class="form-group">
+                    <label for="supportEmail">
+                        <i class="fas fa-envelope"></i> Your Email
+                    </label>
+                    <input type="email" id="supportEmail" placeholder="Enter your email" required>
+                </div>
+                <button class="btn-primary" onclick="startChat()">
+                    <i class="fas fa-comments"></i> Start Chat
+                </button>
+            </div>
+
+            <!-- Issue Category Selection (Hidden Initially) -->
+            <div class="issue-category-section" id="issueCategorySection" style="display: none;">
+                <div class="bot-header">
+                    <i class="fas fa-robot"></i>
+                    <h2>Hi! I'm your Support Assistant</h2>
+                    <p>Please select your issue type to get started:</p>
+                </div>
+                
+                <div class="category-grid">
+                    <div class="category-card" onclick="selectIssue('deposit')">
+                        <i class="fas fa-coins"></i>
+                        <h3>💰 Deposit</h3>
+                        <p>Money not credited</p>
+                    </div>
+                    <div class="category-card" onclick="selectIssue('withdrawal')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h3>💸 Withdrawal</h3>
+                        <p>Cash out issues</p>
+                    </div>
+                    <div class="category-card" onclick="selectIssue('bonus')">
+                        <i class="fas fa-gift"></i>
+                        <h3>🎁 Bonus</h3>
+                        <p>Bonus queries</p>
+                    </div>
+                    <div class="category-card" onclick="selectIssue('referral')">
+                        <i class="fas fa-users"></i>
+                        <h3>👥 Referral</h3>
+                        <p>Referral help</p>
+                    </div>
+                    <div class="category-card" onclick="selectIssue('other')">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>❓ Other Issue</h3>
+                        <p>Any other issue</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; color: #666;">
+                    <p><i class="fas fa-info-circle"></i> Select a category to chat with admin</p>
+                </div>
+            </div>
+
+            <!-- Chat Section (Hidden Initially) -->
+            <div class="chat-section" id="chatSection" style="display: none;">
+                <div class="chat-header">
+                    <div class="user-email-display">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="displayEmail"></span>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="back-to-menu-btn" onclick="backToMenu()" title="Change issue type">
+                            <i class="fas fa-list"></i> Menu
+                        </button>
+                        <span class="status-indicator">
+                            <span class="status-dot"></span> Support Online
+                        </span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <i class="fas fa-robot"></i>
+                        <p>Welcome to Aviator Support! An admin will assist you shortly.</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload()">
+                    <button class="attach-btn" onclick="document.getElementById('imageUpload').click()">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .support-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .support-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .support-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .support-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .support-content {
+            padding: 40px;
+        }
+
+        .user-info-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .user-info-section h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .user-info-section p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .issue-category-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .bot-header {
+            margin-bottom: 40px;
+        }
+
+        .bot-header i {
+            font-size: 4em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .bot-header h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .bot-header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 20px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .category-card i {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+        }
+
+        .category-card p {
+            color: #666;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .attach-btn {
+            background: #f0f0f0;
+            color: #667eea;
+            border: 2px solid #ddd;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .attach-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .message-image {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .bot-message {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .bot-message i {
+            color: #f59e0b;
+            margin-right: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .chat-section {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-email-display {
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .back-to-menu-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-to-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message i {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 15px;
+        }
+
+        .message.admin .message-content {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px 15px 15px 0;
+        }
+
+        .message-time {
+            font-size: 0.75em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .message.admin .message-sender {
+            color: #667eea;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .support-container {
+                margin: 20px auto;
+            }
+
+            .support-header {
+                padding: 30px 20px;
+            }
+
+            .support-header h1 {
+                font-size: 2em;
+            }
+
+            .support-content {
+                padding: 20px;
+            }
+
+            .chat-section {
+                height: 500px;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+
+    <script>
+        let currentUserEmail = '';
+        let chatId = '';
+        let selectedIssueType = '';
+
+        // Check if user is logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentUser = sessionStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                document.getElementById('supportEmail').value = user.email || user.phone || '';
+            }
+
+            // Check if user already has an active chat
+            checkExistingChat();
+
+            // Auto-load chat messages
+            setInterval(loadMessages, 3000);
+        });
+
+        function checkExistingChat() {
+            const email = document.getElementById('supportEmail').value.trim();
+            if (!email) return;
+
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            const existingChat = chats.find(c => c.email === email && c.status === 'active');
+
+            if (existingChat) {
+                // User already has an active chat - resume it
+                currentUserEmail = email;
+                chatId = existingChat.id;
+                selectedIssueType = existingChat.issueType || 'other';
+                document.getElementById('userInfoSection').style.display = 'none';
+                document.getElementById('issueCategorySection').style.display = 'none';
+                document.getElementById('chatSection').style.display = 'flex';
+                document.getElementById('displayEmail').textContent = email;
+                loadMessages();
+            }
+        }
+
+        function startChat() {
+            const email = document.getElementById('supportEmail').value.trim();
+
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            currentUserEmail = email;
+
+            // Check if chat already exists for this email
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            let existingChat = chats.find(c => c.email === email && c.status === 'active');
+
+            if (existingChat) {
+                // Use existing chat
+                chatId = existingChat.id;
+                selectedIssueType = existingChat.issueType || 'other';
+                document.getElementById('userInfoSection').style.display = 'none';
+                document.getElementById('issueCategorySection').style.display = 'none';
+                document.getElementById('chatSection').style.display = 'flex';
+                document.getElementById('displayEmail').textContent = email;
+                loadMessages();
+            } else {
+                // Show issue category selection
+                document.getElementById('userInfoSection').style.display = 'none';
+                document.getElementById('issueCategorySection').style.display = 'block';
+            }
+        }
+
+        function selectIssue(issueType) {
+            selectedIssueType = issueType;
+            
+            // Create chat with issue type
+            chatId = 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            
+            const newChat = {
+                id: chatId,
+                email: currentUserEmail,
+                issueType: issueType,
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                messages: []
+            };
+            
+            chats.push(newChat);
+            localStorage.setItem('support_chats', JSON.stringify(chats));
+
+            // Show chat interface
+            document.getElementById('issueCategorySection').style.display = 'none';
+            document.getElementById('chatSection').style.display = 'flex';
+            document.getElementById('displayEmail').textContent = currentUserEmail;
+
+            // Add bot welcome message based on issue type
+            addBotMessage(issueType);
+            loadMessages();
+        }
+
+        function addBotMessage(issueType) {
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            const chatIndex = chats.findIndex(c => c.id === chatId);
+            if (chatIndex === -1) return;
+
+            let botMessage = '';
+            let requiresAdmin = true;
+
+            switch(issueType) {
+                case 'deposit':
+                    botMessage = "🤖 <strong>Deposit Issue</strong>\n\nI understand you're having trouble with a deposit. Please provide:\n\n1. Transaction ID / UTR Number\n2. Amount deposited\n3. Screenshot of payment (use attachment button)\n\nOur admin will verify and credit your account shortly.";
+                    requiresAdmin = true;
+                    break;
+                
+                case 'withdrawal':
+                    botMessage = "🤖 <strong>Withdrawal Status</strong>\n\n✅ Your withdrawal is being processed!\n\n⏱️ Processing Time: Usually 5-30 minutes\n⏰ Maximum Time: 24 hours\n\nIf it takes longer than 24 hours, our admin will assist you. Please wait...";
+                    requiresAdmin = false;
+                    break;
+                
+                case 'bonus':
+                    botMessage = "🤖 <strong>Bonus Query</strong>\n\nPlease describe your bonus issue:\n\n• Signup bonus not credited?\n• Wagering requirements?\n• Referral bonus?\n\nOur admin will help you shortly!";
+                    requiresAdmin = true;
+                    break;
+                
+                case 'referral':
+                    botMessage = "🤖 <strong>Referral Program</strong>\n\n📱 Share your referral code\n💰 Earn bonus on each signup\n🎁 Get rewards\n\nPlease share your specific query, and admin will assist!";
+                    requiresAdmin = true;
+                    break;
+                
+                case 'other':
+                    botMessage = "🤖 <strong>Support</strong>\n\nPlease describe your issue in detail. Our admin will respond as soon as possible.\n\nYou can also attach screenshots using the 📎 button.";
+                    requiresAdmin = true;
+                    break;
+            }
+
+            const botMsg = {
+                id: 'msg_' + Date.now(),
+                sender: 'bot',
+                text: botMessage,
+                timestamp: new Date().toISOString(),
+                requiresAdmin: requiresAdmin
+            };
+
+            chats[chatIndex].messages.push(botMsg);
+            chats[chatIndex].lastMessageAt = new Date().toISOString();
+            localStorage.setItem('support_chats', JSON.stringify(chats));
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function handleImageUpload() {
+            const fileInput = document.getElementById('imageUpload');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size should be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                sendMessage(e.target.result, true);
+            };
+            reader.readAsDataURL(file);
+            
+            fileInput.value = '';
+        }
+
+        function sendMessage(imageData = null, isImage = false) {
+            let message = '';
+            
+            if (!isImage) {
+                const input = document.getElementById('messageInput');
+                message = input.value.trim();
+                if (!message) return;
+                input.value = '';
+            }
+
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            const chatIndex = chats.findIndex(c => c.id === chatId);
+
+            if (chatIndex === -1) return;
+
+            const newMessage = {
+                id: 'msg_' + Date.now(),
+                sender: 'user',
+                email: currentUserEmail,
+                text: isImage ? '' : message,
+                image: isImage ? imageData : null,
+                timestamp: new Date().toISOString()
+            };
+
+            chats[chatIndex].messages.push(newMessage);
+            chats[chatIndex].lastMessageAt = new Date().toISOString();
+            localStorage.setItem('support_chats', JSON.stringify(chats));
+
+            loadMessages();
+        }
+
+        function loadMessages() {
+            if (!chatId) return;
+
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            const chat = chats.find(c => c.id === chatId);
+
+            if (!chat) return;
+
+            const messagesContainer = document.getElementById('chatMessages');
+            const welcomeMsg = messagesContainer.querySelector('.welcome-message');
+
+            messagesContainer.innerHTML = '';
+            if (welcomeMsg && chat.messages.length === 0) {
+                messagesContainer.appendChild(welcomeMsg);
+            }
+
+            chat.messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                
+                if (msg.sender === 'bot') {
+                    // Bot message
+                    messageDiv.className = 'bot-message';
+                    messageDiv.innerHTML = `
+                        <i class="fas fa-robot"></i>
+                        <div style="white-space: pre-line;">${msg.text}</div>
+                    `;
+                } else {
+                    // User or Admin message
+                    messageDiv.className = `message ${msg.sender}`;
+
+                    const time = new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    let messageContent = '';
+                    if (msg.image) {
+                        messageContent = `<img src="${msg.image}" class="message-image" onclick="window.open('${msg.image}', '_blank')" alt="Uploaded image">`;
+                    } else {
+                        messageContent = msg.text;
+                    }
+
+                    messageDiv.innerHTML = `
+                        <div class="message-content">
+                            ${msg.sender === 'admin' ? '<div class="message-sender"><i class="fas fa-user-shield"></i> Admin Support</div>' : ''}
+                            <div>${messageContent}</div>
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+                }
+
+                messagesContainer.appendChild(messageDiv);
+            });
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function backToMenu() {
+            if (!confirm('Go back to issue menu? Your current chat will be saved.')) {
+                return;
+            }
+
+            // Hide chat and show category selection
+            document.getElementById('chatSection').style.display = 'none';
+            document.getElementById('issueCategorySection').style.display = 'block';
+        }
+
+        // Cleanup function to remove duplicate chats (run once)
+        function cleanupDuplicateChats() {
+            const chats = JSON.parse(localStorage.getItem('support_chats') || '[]');
+            const uniqueChats = [];
+            const seenEmails = new Set();
+
+            // Keep only the latest chat for each email
+            chats.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            chats.forEach(chat => {
+                if (chat.status === 'active' && !seenEmails.has(chat.email)) {
+                    seenEmails.add(chat.email);
+                    uniqueChats.push(chat);
+                } else if (chat.status === 'closed') {
+                    uniqueChats.push(chat);
+                }
+            });
+
+            localStorage.setItem('support_chats', JSON.stringify(uniqueChats));
+        }
+
+        // Run cleanup on page load
+        cleanupDuplicateChats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Status Check</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 30px; }
+        .status-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .status-label { font-weight: bold; }
+        .status-value { color: #667eea; }
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+        }
+        .btn:hover { opacity: 0.9; }
+        .success { color: #10b981; font-weight: bold; }
+        .error { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 System Status Check</h1>
+        
+        <div class="status-card">
+            <h3>📊 Database Status</h3>
+            <div class="status-item">
+                <span class="status-label">Total Users:</span>
+                <span class="status-value" id="totalUsers">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Total Transactions:</span>
+                <span class="status-value" id="totalTransactions">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Database Size:</span>
+                <span class="status-value" id="dbSize">0 KB</span>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h3>👥 Recent Users</h3>
+            <div id="recentUsers">No users yet</div>
+        </div>
+
+        <div class="status-card">
+            <h3>💰 Recent Transactions</h3>
+            <div id="recentTransactions">No transactions yet</div>
+        </div>
+
+        <div class="status-card">
+            <h3>🧪 Test Actions</h3>
+            <button class="btn" onclick="createTestUser()">Create Test User</button>
+            <button class="btn" onclick="clearAllData()">Clear All Data</button>
+            <button class="btn" onclick="location.reload()">Refresh Status</button>
+        </div>
+    </div>
+
+    <script>
+        const DB_KEY = 'aviator_users';
+        const TRANSACTIONS_KEY = 'aviator_transactions';
+
+        function loadStatus() {
+            const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+            const transactions = JSON.parse(localStorage.getItem(TRANSACTIONS_KEY) || '[]');
+            
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalTransactions').textContent = transactions.length;
+            
+            const dbSize = (JSON.stringify(users).length + JSON.stringify(transactions).length) / 1024;
+            document.getElementById('dbSize').textContent = dbSize.toFixed(2) + ' KB';
+            
+            // Recent users
+            if (users.length > 0) {
+                document.getElementById('recentUsers').innerHTML = users.slice(-5).map(u => `
+                    <div class="status-item">
+                        <span>${u.name}</span>
+                        <span>₹${u.balance || 0}</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Recent transactions
+            if (transactions.length > 0) {
+                document.getElementById('recentTransactions').innerHTML = transactions.slice(-5).map(t => `
+                    <div class="status-item">
+                        <span>${t.type}: ₹${t.amount}</span>
+                        <span class="${t.status === 'approved' ? 'success' : t.status === 'rejected' ? 'error' : ''}">${t.status}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function createTestUser() {
+            const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+            
+            const testUser = {
+                id: Date.now(),
+                name: 'Test User',
+                email: 'test' + Date.now() + '@example.com',
+                phone: null,
+                password: '123456',
+                createdAt: new Date().toISOString(),
+                lastLogin: null,
+                balance: 50,
+                bonusBalance: 0,
+                depositAmount: 0,
+                depositWagered: 0,
+                bonusWagered: 0,
+                totalDeposits: 0,
+                totalWithdrawals: 0,
+                totalBets: 0,
+                totalWins: 0,
+                gamesPlayed: 0,
+                hasSeenBonusPopup: false,
+                upiId: null,
+                activityLog: []
+            };
+            
+            users.push(testUser);
+            localStorage.setItem(DB_KEY, JSON.stringify(users));
+            
+            alert('✅ Test user created!\nEmail: ' + testUser.email + '\nPassword: 123456\nBalance: ₹50');
+            loadStatus();
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ Clear all data? This will delete all users and transactions!')) return;
+            
+            localStorage.removeItem(DB_KEY);
+            localStorage.removeItem(TRANSACTIONS_KEY);
+            sessionStorage.clear();
+            
+            alert('✅ All data cleared!');
+            loadStatus();
+        }
+
+        loadStatus();
+        setInterval(loadStatus, 5000);
+    </script>
+</body>
+</html>

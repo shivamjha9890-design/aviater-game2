@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - Aviator Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="wallet.css">
+</head>
+<body>
+    <div class="wallet-container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Game
+            </button>
+            <h1><i class="fas fa-wallet"></i> My Wallet</h1>
+        </div>
+
+        <!-- Balance Cards -->
+        <div class="balance-section">
+            <div class="balance-card main-balance">
+                <div class="balance-icon"><i class="fas fa-gamepad"></i></div>
+                <div class="balance-info">
+                    <p class="balance-label">Gaming Balance</p>
+                    <h2 class="balance-amount" id="gamingBalance">₹0</h2>
+                    <p style="font-size: 12px; opacity: 0.7; margin-top: 5px;">
+                        Main: ₹<span id="mainBalance">0</span> | Bonus: ₹<span id="bonusBalance">0</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wager Progress -->
+        <div class="wager-section">
+            <h3><i class="fas fa-chart-line"></i> Wagering Progress</h3>
+            
+            <div class="wager-card" id="wagerCard">
+                <div class="wager-header">
+                    <span id="wagerLabel">💵 Deposit Wager</span>
+                    <span class="wager-amount" id="wagerAmount">₹0 / ₹0</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="wagerProgress" style="width: 0%"></div>
+                </div>
+                <p class="wager-note" id="wagerNote">No active wagering requirement</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-deposit" onclick="showDepositModal()">
+                <i class="fas fa-arrow-down"></i> Deposit
+            </button>
+            <button class="btn-withdraw" onclick="showWithdrawModal()">
+                <i class="fas fa-arrow-up"></i> Withdraw
+            </button>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="transaction-section">
+            <h3><i class="fas fa-history"></i> Transaction History</h3>
+            <div class="transaction-list" id="transactionList">
+                <p class="no-transactions">No transactions yet</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div class="modal" id="depositModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-arrow-down"></i> Deposit Money</h2>
+                <button class="close-btn" onclick="closeDepositModal()">&times;</button>
+            </div>
+            
+            <div class="bonus-banner">
+                <i class="fas fa-gift"></i>
+                <div>
+                    <strong>200% Bonus Available!</strong>
+                    <p>Get 3x your deposit amount (optional)</p>
+                </div>
+            </div>
+
+            <form id="depositForm" onsubmit="return handleDeposit(event)">
+                <div class="input-group">
+                    <label>Deposit Amount</label>
+                    <input type="number" id="depositAmount" min="100" step="10" placeholder="Min ₹100" required>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <input type="checkbox" id="acceptBonus" checked>
+                        <strong>I want 200% bonus</strong> (with 10x wagering)
+                    </label>
+                    <p class="hint" id="depositHint">You'll receive: <span id="totalReceive">₹0</span></p>
+                </div>
+
+                <div class="input-group">
+                    <label>Choose Payment Method</label>
+                    <div class="payment-methods">
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="googlepay" checked>
+                            <div class="payment-card">
+                                <i class="fab fa-google-pay"></i>
+                                <span>Google Pay</span>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="phonepe">
+                            <div class="payment-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>PhonePe</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="upi-details">
+                    <h4>Pay to UPI ID:</h4>
+                    <div class="upi-box">
+                        <code id="upiId">7011354220-4@ybl</code>
+                        <button type="button" class="copy-btn" onclick="copyUPI()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p class="upi-note">⚠️ Send exact amount to the UPI ID above</p>
+                </div>
+
+                <div class="input-group">
+                    <label>Your Transaction ID / UTR</label>
+                    <input type="text" id="transactionId" placeholder="Enter transaction reference" required>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-check"></i> Submit Deposit Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-arrow-up"></i> Withdraw Money</h2>
+                <button class="close-btn" onclick="closeWithdrawModal()">&times;</button>
+            </div>
+
+            <div class="withdraw-info">
+                <p><strong>Available to Withdraw:</strong> <span id="withdrawableAmount">₹0</span></p>
+                <p class="withdraw-note">Minimum withdrawal: ₹100</p>
+            </div>
+
+            <form id="withdrawForm" onsubmit="return handleWithdraw(event)">
+                <div class="input-group">
+                    <label>Withdrawal Amount</label>
+                    <input type="number" id="withdrawAmount" min="100" step="10" placeholder="Min ₹100" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Your UPI ID</label>
+                    <input type="text" id="withdrawUPI" placeholder="yourname@paytm" required>
+                    <p class="hint">Enter your UPI ID to receive money</p>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-check"></i> Request Withdrawal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bonus Popup -->
+    <div class="bonus-popup" id="bonusPopup">
+        <div class="bonus-popup-content">
+            <div class="bonus-icon">🎉</div>
+            <h2>Welcome Bonus!</h2>
+            <p class="bonus-amount">₹50 FREE</p>
+            <p>You've received ₹50 as a signup bonus!</p>
+            <div class="bonus-details">
+                <p><strong>200% Deposit Bonus</strong></p>
+                <p>Deposit ₹100 and get ₹300 total!</p>
+            </div>
+            <button class="btn-close-popup" onclick="closeBonusPopup()">Start Playing!</button>
+        </div>
+    </div>
+
+    <script src="wallet.js"></script>
+</body>
+</html>
