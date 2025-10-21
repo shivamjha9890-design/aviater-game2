@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <title>Aviator Game - Casino Crash Game</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛩️ AVIATOR GAME</h1>
+            <div class="user-info" id="userInfo">
+                <span class="user-name" id="userName"></span>
+                <button class="wallet-btn" onclick="window.location.href='wallet.html'">
+                    <i class="fas fa-wallet"></i> Wallet
+                </button>
+                <button class="wallet-btn" onclick="window.location.href='support.html'" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <i class="fas fa-headset"></i> Support
+                </button>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            <div class="balance-display">
+                <span class="balance-label">Gaming Balance:</span>
+                <span class="balance-amount" id="balance">₹1000</span>
+            </div>
+        </header>
+
+        <div class="game-area">
+            <!-- Animated clouds -->
+            <div class="cloud cloud1">☁️</div>
+            <div class="cloud cloud2">☁️</div>
+            <div class="cloud cloud3">☁️</div>
+            
+            <div class="multiplier-display" id="multiplierDisplay">
+                <span class="multiplier-value" id="multiplier">1.00x</span>
+                <span class="game-status" id="gameStatus">Place your bet!</span>
+                <div class="speed-indicator" id="speedIndicator">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span id="speedText">0 km/h</span>
+                </div>
+            </div>
+            
+            <div class="plane-container" id="planeContainer">
+                <div class="sound-waves" id="soundWaves">
+                    <div class="sound-wave"></div>
+                    <div class="sound-wave"></div>
+                    <div class="sound-wave"></div>
+                </div>
+                <div class="plane" id="plane">✈️</div>
+                <div class="plane-trail" id="planeTrail"></div>
+            </div>
+
+            <div class="crash-message" id="crashMessage">
+                💥 CRASHED! 💥
+            </div>
+            
+            <!-- Particle effects container -->
+            <div class="particles" id="particles"></div>
+        </div>
+
+        <div class="controls">
+            <div class="bet-section">
+                <label for="betAmount">Bet Amount (Min: ₹10)</label>
+                <div class="input-group">
+                    <button class="btn-adjust" id="decreaseBet">-</button>
+                    <input type="number" id="betAmount" min="10" value="10" step="10">
+                    <button class="btn-adjust" id="increaseBet">+</button>
+                </div>
+            </div>
+
+            <div class="auto-cashout-section">
+                <div class="auto-cashout-header">
+                    <label for="autoCashoutToggle">
+                        <input type="checkbox" id="autoCashoutToggle" class="toggle-checkbox">
+                        <span class="toggle-label">🤖 Enable Auto Cashout</span>
+                    </label>
+                </div>
+                <div class="auto-cashout-controls" id="autoCashoutControls" style="display: none;">
+                    <label for="autoCashoutMultiplier">✍️ Enter Your Target Multiplier (e.g., 1.80, 2.50, 3.00)</label>
+                    <div class="input-group">
+                        <button class="btn-adjust" id="decreaseAutoCashout">-</button>
+                        <input type="number" id="autoCashoutMultiplier" min="1.01" max="100" value="1.80" step="0.01" placeholder="1.80">
+                        <button class="btn-adjust" id="increaseAutoCashout">+</button>
+                    </div>
+                    <p class="auto-cashout-hint">💡 When plane reaches <span id="autoCashoutDisplay">1.80x</span>, you WIN automatically!</p>
+                    <div class="auto-cashout-example">
+                        <strong>🎯 How it works:</strong><br>
+                        • Type any multiplier (e.g., 2.50x)<br>
+                        • If plane reaches 2.50x → <span style="color: #16a34a;">✅ AUTO WIN!</span><br>
+                        • If plane crashes before 2.50x → <span style="color: #dc2626;">❌ You lose</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" id="placeBetBtn">Place Bet (₹10)</button>
+                <button class="btn-cashout" id="cashOutBtn" style="display: none;">Cash Out</button>
+            </div>
+
+            <div class="game-info">
+                <div class="info-item">
+                    <span class="info-label">Current Bet:</span>
+                    <span class="info-value" id="currentBet">₹0</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Potential Win:</span>
+                    <span class="info-value" id="potentialWin">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-history">
+            <h3>📊 Game Statistics</h3>
+            
+            <!-- Bet Statistics -->
+            <div class="bet-statistics">
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-label">Total Bets</div>
+                    <div class="stat-value" id="totalBetsCount">0</div>
+                </div>
+                <div class="stat-card win">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-label">Wins</div>
+                    <div class="stat-value" id="totalWins">0</div>
+                </div>
+                <div class="stat-card loss">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-label">Losses</div>
+                    <div class="stat-value" id="totalLosses">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value" id="winRate">0%</div>
+                </div>
+            </div>
+
+            <!-- Trend Visualization -->
+            <div class="trend-section">
+                <h3>📈 Last 25 Rounds Trend</h3>
+                <div class="trend-legend">
+                    <span class="legend-item"><span class="legend-color low"></span> Low (1.00x - 1.99x)</span>
+                    <span class="legend-item"><span class="legend-color medium"></span> Medium (2.00x - 4.99x)</span>
+                    <span class="legend-item"><span class="legend-color high"></span> High (5.00x+)</span>
+                </div>
+                <div class="trend-items" id="trendItems">
+                    <!-- Trend will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Recent Results -->
+            <h3>🎲 Recent Results</h3>
+            <div class="history-items" id="historyItems">
+                <!-- History will be added dynamically -->
+            </div>
+        </div>
+
+        <div class="gambling-warning">
+            <p>⚠️ <strong>Gambling Warning:</strong> This is a pure luck-based game. You can lose all your money or win big - it's completely random. Gamble responsibly!</p>
+        </div>
+        
+        <!-- Sound Toggle Button -->
+        <div class="sound-control">
+            <button id="soundToggle" class="sound-btn">
+                <i class="fas fa-volume-up"></i>
+                <span>Sound ON</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
